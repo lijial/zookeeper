@@ -29,30 +29,30 @@ public class AsynCreate {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        ZooKeeper zookeeper = new ZooKeeper("localhost:2181", 200000, null);
+        ZooKeeper zookeeper = new ZooKeeper("192.168.6.55:2181", 200000, null);
 
         zookeeper.create("/mas", "sid-o2".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL,
-                         new StringCallback() {
+                new StringCallback() {
 
-            @Override
-            public void processResult(int rc, String path, Object ctx, String name) {
-                Code code = Code.get(rc);
-                switch (code) {
-                    case OK:
-                        System.out.println(code);
-                        break;
-                    case NODEEXISTS:
-                        System.out.println(code);
-                        break;
-                    case SESSIONEXPIRED:
-                        System.out.println(code);
-                        break;
-                    default:
-                        System.out.println("unknow " + code);
-                }
+                    @Override
+                    public void processResult(int rc, String path, Object ctx, String name) {
+                        Code code = Code.get(rc);
+                        switch (code) {
+                            case OK:
+                                System.out.println("code is:"+code);
+                                break;
+                            case NODEEXISTS:
+                                System.out.println(code);
+                                break;
+                            case SESSIONEXPIRED:
+                                System.out.println(code);
+                                break;
+                            default:
+                                System.out.println("unknow " + code);
+                        }
 
-            }
-        }, null);
+                    }
+                }, null);
 
         DataCallback callback = new DataCallback() {
 

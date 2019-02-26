@@ -25,7 +25,7 @@ import org.apache.zookeeper.data.Stat;
  * 类Master.java的实现描述：TODO 类实现描述 
  * @author yangqi Jan 1, 2014 1:37:01 PM
  */
-public class AsynMaster implements Watcher, Runnable {
+public class  AsynMaster implements Watcher, Runnable {
 
     private ZooKeeper zk;
 
@@ -61,36 +61,37 @@ public class AsynMaster implements Watcher, Runnable {
         }
     }
 
-    public void createMaterNode(){
+    //后调用这里
+    public void createMasterNode(){
         String ctx = "ctx for " + serverId;
         zk.create(MASTER_PATH, serverId.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL,
-                      new StringCallback() {
-                          @Override
-                          public void processResult(int rc, String path, Object ctx, String name) {
-                          Code code = Code.get(rc);
-                          switch (code) {
-                              case OK:
-                                  log("create master ok");
-                                  sleep(10);
-                                  stopZK();
-                                  break;
-                              case NODEEXISTS:
-                                  log("node exists");
-                                  checkForMaster();
-                                  break;
-                              case SESSIONEXPIRED:
-                                  log("session expired in create");
-                                  sleep(10);
-                                  break;
-                              default:
-                                  checkForMaster();
-                                  log("code is " + code);
-                          }
+                new StringCallback() {
+                    @Override
+                    public void processResult(int rc, String path, Object ctx, String name) {
+                        Code code = Code.get(rc);
+                        switch (code) {
+                            case OK:
+                                log("createMasterNode(),create master ok");//后调用这里
+                                sleep(10);
+                                stopZK();
+                                break;
+                            case NODEEXISTS:
+                                log("createMasterNode(),node exists");//后调用这里
+                                checkForMaster();
+                                break;
+                            case SESSIONEXPIRED:
+                                log("createMasterNode(),session expired in create");
+                                sleep(10);
+                                break;
+                            default:
+                                checkForMaster();
+                                log("createMasterNode(),code is " + code);
+                        }
 
-                          }
-                  }, ctx);
+                    }
+                }, ctx);
     }
-
+    //先调用这里
     public void checkForMaster() {
         DataCallback callback = new DataCallback() {
 
@@ -100,26 +101,26 @@ public class AsynMaster implements Watcher, Runnable {
                 switch (code) {
                     case OK:
                         if (new String(data).equals(serverId)) {
-                            System.out.println("stop now");
+                            System.out.println("checkForMaster(),stop now");
                             stopZK();
                         } else {
                             checkForMaster();
                         }
                         break;
                     case NONODE:
-                        log("node not exists");
-                        createMaterNode();
+                        log("checkForMaster(),node not exists");//先调用这里
+                        createMasterNode();
                         break;
                     case NODEEXISTS:
-                        log("node exists");
-                        createMaterNode();
+                        log("checkForMaster(),node exists");
+                        createMasterNode();
                         break;
                     case SESSIONEXPIRED:
-                        log("session expired in check");
+                        log("checkForMaster(),session expired in check");
                         sleep(10);
                         break;
                     default:
-                        log("code is " + code);
+                        log("checkForMaster(),code is " + code);
                         checkForMaster();
                 }
 
@@ -163,10 +164,10 @@ public class AsynMaster implements Watcher, Runnable {
 
         int masterCount = 3;
         ExecutorService service = Executors.newFixedThreadPool(masterCount);
-        for (int i = 0; i < masterCount; i++) {
-            AsynMaster master = new AsynMaster("localhost:2181", "o2-" + i);
-            service.submit(master);
-        }
+        AsynMaster master = new AsynMaster("192.168.6.55:2181", "o2-" + 0);
+        service.submit(master);
+//        for (int i = 0; i < masterCount; i++) {
+//        }
 
         sleep(1000);
 

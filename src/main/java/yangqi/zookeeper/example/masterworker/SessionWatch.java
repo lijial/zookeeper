@@ -13,6 +13,9 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
+/**
+ * event没有检测到
+ */
 public class SessionWatch {
 
     /**
@@ -21,7 +24,7 @@ public class SessionWatch {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        ZooKeeper zookeeper = new ZooKeeper("localhost:2181", 2000, new Watcher() {
+        ZooKeeper zookeeper = new ZooKeeper("192.168.6.55:2181", 2000, new Watcher() {
 
             @Override
             public void process(WatchedEvent event) {

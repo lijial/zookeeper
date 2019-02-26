@@ -24,7 +24,7 @@ public class ZkNIOClient {
 
         int port=2181;
 
-        String host="127.0.0.1";
+        String host="192.168.6.55";
 
         System.out.println("start to connect to "+host+" :" + port);
 

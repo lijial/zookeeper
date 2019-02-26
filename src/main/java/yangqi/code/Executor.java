@@ -15,9 +15,8 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 /**
- * 类Executor.java的实现描述：TODO 类实现描述
- * 
- * @author yangqi 2013-5-30 下午10:48:09
+ * 濡傛灉璺緞涓嬬殑鍊兼敼鍙橈紝灏辨墽琛學atcher:process()鏂规硶
+ *
  */
 
 public class Executor implements Watcher, Runnable, DataMonitorListener {
@@ -42,7 +41,7 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
      * @param args
      */
     public static void main(String[] args) {
-        args = new String[] { "localhost:2181", "/yangqi_test" };
+        args = new String[] { "192.168.6.55:2181", "/yangqi_test" };
 
         String hostPort = args[0];
         String znode = args[1];
@@ -56,13 +55,15 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
 
     /***************************************************************************
      * We do process any events ourselves, we just need to forward them on.
-     * 
-     * @see org.apache.zookeeper.Watcher#process(org.apache.zookeeper.proto.WatcherEvent)
+     *
+     * @see org.apache.zookeeper.Watcher# process(org.apache.zookeeper.proto.WatcherEvent)
      */
+    @Override
     public void process(WatchedEvent event) {
         dm.process(event);
     }
 
+    @Override
     public void run() {
         try {
             synchronized (this) {

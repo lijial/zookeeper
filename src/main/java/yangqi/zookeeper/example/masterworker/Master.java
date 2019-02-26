@@ -62,7 +62,7 @@ public class Master implements Watcher, Runnable {
     public void createMaterNode(){
         try {
             zk.create(MASTER_PATH, serverId.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
-                                        CreateMode.EPHEMERAL);
+                    CreateMode.EPHEMERAL);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class Master implements Watcher, Runnable {
         int masterCount = 3;
         ExecutorService service = Executors.newFixedThreadPool(masterCount);
         for (int i = 0; i < masterCount; i++) {
-            Master master = new Master("localhost:2181", "o2-" + i);
+            Master master = new Master("192.168.6.55:2181", "o2-" + i);
             service.submit(master);
         }
 
